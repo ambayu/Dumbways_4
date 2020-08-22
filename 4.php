@@ -14,6 +14,8 @@
 			document.getElementById('cus').style.display='none';
 			document.getElementById('pro').style.display='inline';
 			document.getElementById('brand').style.display='none';
+			document.getElementById('isi').style.display='inline';
+
 		}
 		function brand(){
 			document.getElementById('pro').style.display='none';
@@ -23,6 +25,11 @@
 		function ambil(ids){
 		document.getElementById('ids').value=ids;
 		document.getElementById('mod').submit();
+		}
+		function beli(ids){
+			document.getElementById('cus').style.display='none';
+			document.getElementById('pro').style.display='inline';
+			document.getElementById('brand').style.display='none';
 		}
 	</script>
 <style type="text/css">
@@ -58,7 +65,10 @@
 <div class="container">
 	<div class="head"><h1>RMP MOTORCYCLE</h1>
 		<div class="side">
-			<button onclick="cus()">Add Customer</button> <button onclick="pro()">Add Product</button> <button onclick="brand()">Add Brand</button>
+			<button onclick="cus()">Add Customer</button>
+			 <button onclick="pro()">Add Product</button>
+			  <button onclick="brand()">Add Brand</button>
+			    <button onclick="beli()">Beli</button>
 		</div>
 	</div>
 	<div class="body">
@@ -114,6 +124,53 @@
 
 
 		<div id='pro' class="product">
+			<div class="isi" id="isi" style="display: none;">
+				<h1>ADD MOTOR</h1>
+			<form action="" enctype="multipart/form-data" method="post">
+				<label for='nama'>Motor Name  &nbsp;&nbsp;&nbsp;:</label> 
+				<input type="text" name="namep">
+				<br>
+					<label for='brand'>Brand  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:</label> 
+				<select name="brand">
+					<?php 
+						$sql2="SELECT name as nameb ,id as bid from brand_tb";
+			$query2=mysqli_query($koneksi,$sql2);
+			while($row2=mysqli_fetch_assoc($query2))
+			{
+
+				echo "
+
+				<option  value='".$row2['bid']."'>".$row2['nameb']."</option>";
+			}
+					 ?>
+					
+				</select>
+
+				<br><label for='Image'>Image &nbsp;&nbsp;&nbsp;:</label>
+				<input type="file" name="Image">
+				<br><label for='color'>color &nbsp;&nbsp;&nbsp;:</label>
+				<input type="text" name="color">
+				<br><label for='specification'>specification  &nbsp;&nbsp;&nbsp;:</label>
+				<input type="text" name="specification">
+				<br><label for='stock'>stock:  &nbsp;&nbsp;&nbsp;:</label>
+				<input type="text" name="stock">
+				<br>
+				<input type="submit" name="submit" value="Submit">
+			</form>
+			<?php 
+			if (isset($_POST['namep'])) {
+				$nama_gambar=$_FILES['Image']['name'];
+				$tmp_gambar=$_FILES['Image']['tmp_name'];
+				$dir_gambar="motor/$nama_gambar";
+
+				$sql="insert into motorcycle_tb(name,brand_id,Color,specification,stock,image) values('".$_POST['namep']."','".$_POST['brand']."','".$_POST['color']."','".$_POST['specification']."','".$_POST['stock']."','".$nama_gambar."')";
+				echo $sql;
+			$query=mysqli_query($koneksi,$sql);
+			move_uploaded_file($tmp_gambar, $dir_gambar);
+			 	# code...
+			 } ?>
+			<br>
+			</div>
 			<?php 
 			echo "<table>";
 			$sql="SELECT *  from motorcycle_tb";
@@ -123,7 +180,7 @@
 			
 				echo "<tr><td>Nama :".$row['name']."</td>";
 				echo "	<td>Color :".$row['Color']."</td></tr>";
-				echo "<td><input type='button' value='Beli' onclick='ambil(".$row['id'].");'></td>";
+				echo "<td><input type='button' id='buy' value='Beli' onclick='ambil(".$row['id'].");'></td>";
 				echo "<tr><td> <img style='height:200px;' src='motor/".$row['Image']."'></td></tr>";
 			
 			
